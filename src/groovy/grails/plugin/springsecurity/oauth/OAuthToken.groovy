@@ -15,6 +15,8 @@
  */
 package grails.plugin.springsecurity.oauth
 
+import grails.converters.JSON;
+
 import org.scribe.model.Token
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
@@ -67,6 +69,11 @@ abstract class OAuthToken extends AbstractAuthenticationToken {
     protected final Map getParameters() { return Collections.unmodifiableMap(tokenParams) }
 
     private Map extractParameters(String data) {
-        return data.split('&').collectEntries { it.split('=') as List }
+		if (data.startsWith('{')) {
+			return JSON.parse(data)
+			// JSON
+		} else {
+        	return null // data.split('&').collectEntries { it.split('=') as List }
+		}
     }
 }
